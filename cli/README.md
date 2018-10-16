@@ -19,7 +19,7 @@ workflow "Publish on Netlify" {
 
 action "Publish" {
   uses = "netlify/actions/cli@master"
-  args = "deploy deploy --dir=site --functions=functions"
+  args = "deploy --dir=site --functions=functions"
   secrets = ["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]
 }
 ```
