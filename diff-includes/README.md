@@ -23,5 +23,9 @@ action "Publish" {
   uses = "netlify/actions/build@master"
   // see https://github.com/netlify/actions/tree/master/build for details
   secrets = ["GITHUB_TOKEN", "NETLIFY_SITE_ID"]
+  env = {
+    // this should match previouse action `args` until known issue is resolved
+    BUILD_DIR = "docs"
+  }
 }
 ```
