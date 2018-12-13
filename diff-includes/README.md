@@ -11,7 +11,7 @@ workflow "Publish docs if changed" {
 }
 
 action "Check changes in docs" {
-  uses = "netify/actions/diff-includes@master"
+  uses = "netlify/actions/diff-includes@master"
   // this can be one or many files/directories
   args = "docs"
 }
