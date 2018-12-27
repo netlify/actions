@@ -18,7 +18,7 @@ else
     --output /dev/stderr \
     --write-out "%{http_code}" \
     -H "Authorization: $GITHUB_TOKEN" \
-    -H "X-GitHub-Event: $GITHUB_EVENT_TYPE" \
+    -H "X-GitHub-Event: $GITHUB_EVENT_NAME" \
     -H 'Content-Type: application/json' \
     --data-binary @args.json \
     "https://api.netlify.com/api/v1/github/$GITHUB_REPOSITORY/build"
