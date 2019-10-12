@@ -1,3 +1,7 @@
 #!/bin/sh -l
 
-sh -c "if grep \"^ignore:$BUILD_DIR\" $HOME/ignore; then ls $HOME && exit 0; else ${BUILD_COMMAND:-echo} && netlify $*; fi"
+if [ -f "$HOME/ignore" ] && grep "^ignore:$BUILD_DIR" "$HOME/ignore"; then
+  echo "$BUILD_DIR didn't change"
+else
+  ${BUILD_COMMAND:-echo} && netlify $*
+fi
