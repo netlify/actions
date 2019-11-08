@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Check changes in stories
-      uses: netlify/actions/diff-includes@v1
+      uses: netlify/actions/diff-includes@master
       with:
         args: docs
 ```
