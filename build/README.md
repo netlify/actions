@@ -19,15 +19,16 @@ Trigger a build on Netlify, if there's no site for this repo it will automagical
 ```yml
 on: push
 name: Build on Netlify
+
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@master
 
-    - name: Check changes in stories
+    - name: Build
+      uses: netlify/actions/build@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
@@ -35,5 +36,4 @@ jobs:
         NETLIFY_BASE: site
         NETLIFY_CMD: npm build
         NETLIFY_DIR: site/_build
-      uses: netlify/actions/build@master
 ```
