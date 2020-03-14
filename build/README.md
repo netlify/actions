@@ -14,20 +14,40 @@ Trigger a build on Netlify, if there's no site for this repo it can automagicall
 
 ## Example
 
-Trigger a build on Netlify, if there's no site for this repo it will automagically set up one with the specified base, command, and publish directory.
+Trigger a build to a specific site in Netlify
 
 ```yml
 on: push
-name: Build on Netlify
+name: Publish on Netlify
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@master
 
-    - name: Build
+    - name: Publish
+      uses: netlify/actions/build@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+```
+
+Trigger a build on Netlify, if there's no site for this repo it will automagically set up one with the specified base, command, and publish directory.
+
+```yml
+on: push
+name: Publish on Netlify
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Publish
       uses: netlify/actions/build@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
