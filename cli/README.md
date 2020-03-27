@@ -8,18 +8,23 @@ This Action enables arbitrary actions with the [Netlify CLI](https://github.com/
 - `NETLIFY_SITE_ID` - *Optional* API site ID of the site you wanna work on
   [Obtain it from the UI](https://www.netlify.com/docs/cli/#link-with-an-environment-variable)
 
-
 ## Example
 
-```hcl
-workflow "Publish on Netlify" {
-  on = "push"
-  resolves = ["Publish"]
-}
+```yml
+on: push
+name: Publish on Netlify
+jobs:
+  publish:
+    runs-on: ubuntu-latest
 
-action "Publish" {
-  uses = "netlify/actions/cli@master"
-  args = "deploy --dir=site --functions=functions"
-  secrets = ["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]
-}
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Publish
+      uses: netlify/actions/cli@master
+        with:
+          args: deploy --dir=site --functions=functions
+      env:
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 ```

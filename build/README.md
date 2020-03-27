@@ -12,37 +12,47 @@ Trigger a build on Netlify, if there's no site for this repo it can automagicall
 - `NETLIFY_CMD` - *Optional* Build command to build site
 - `NETLIFY_DIR` - *Optional* The directory to publish (relative to root of your repo)
 
-## Examples
+## Example
 
 Trigger a build to a specific site in Netlify
 
-```hcl
-workflow "Publish on Netlify" {
-  on = "push"
-  resolves = ["Publish"]
-}
+```yml
+on: push
+name: Publish on Netlify
 
-action "Publish" {
-  uses = "netlify/actions/build@master"
-  secrets = ["GITHUB_TOKEN", "NETLIFY_SITE_ID"]
-}
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Publish
+      uses: netlify/actions/build@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 ```
 
 Trigger a build on Netlify, if there's no site for this repo it will automagically set up one with the specified base, command, and publish directory.
 
-```hcl
-workflow "Publish on Netlify" {
-  on = "push"
-  resolves = ["Publish"]
-}
+```yml
+on: push
+name: Publish on Netlify
 
-action "Publish" {
-  uses = "netlify/actions/build@master"
-  secrets = ["GITHUB_TOKEN"]
-  env = {
-    NETLIFY_BASE = "site"
-    NETLIFY_CMD = "npm build"
-    NETLIFY_DIR = "site/_build"
-  }
-}
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Publish
+      uses: netlify/actions/build@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        NETLIFY_BASE: site
+        NETLIFY_CMD: npm build
+        NETLIFY_DIR: site/_build
 ```
