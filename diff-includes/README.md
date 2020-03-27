@@ -18,6 +18,7 @@ jobs:
     - name: Check changes in docs
       uses: netlify/actions/diff-includes@master
       with:
+        # this can be one or many files/directories
         args: docs
 
   build:
@@ -31,5 +32,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        # this should match previous action `args` until known issue is resolved
         BUILD_DIR: docs
 ```
