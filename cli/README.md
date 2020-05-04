@@ -22,8 +22,8 @@ jobs:
 
     - name: Publish
       uses: netlify/actions/cli@master
-        with:
-          args: deploy --dir=site --functions=functions
+      with:
+        args: deploy --dir=site --functions=functions
       env:
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
