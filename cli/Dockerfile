@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM node:16-alpine
 
 LABEL version="1.0.1"
 LABEL repository="http://github.com/netlify/actions"
@@ -9,7 +9,7 @@ LABEL "com.github.actions.description"="Wraps the Netlify CLI to enable common N
 LABEL "com.github.actions.icon"="cloud"
 LABEL "com.github.actions.color"="blue"
 
-RUN yarn global add netlify-cli
+RUN npm install -g netlify-cli
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
