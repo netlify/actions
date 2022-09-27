@@ -9,6 +9,7 @@ read -d '' COMMAND <<- EOF
 EOF
 
 OUTPUT=$(sh -c "$COMMAND")
+COMMAND_FAILED=$?
 
 NETLIFY_OUTPUT=$(echo "$OUTPUT")
 NETLIFY_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*(--)[a-zA-Z0-9./?=_-]*') #Unique key: --
@@ -19,3 +20,7 @@ echo "::set-output name=NETLIFY_OUTPUT::$NETLIFY_OUTPUT"
 echo "::set-output name=NETLIFY_URL::$NETLIFY_URL"
 echo "::set-output name=NETLIFY_LOGS_URL::$NETLIFY_LOGS_URL"
 echo "::set-output name=NETLIFY_LIVE_URL::$NETLIFY_LIVE_URL"
+
+if [ $COMMAND_FAILED -ne 0 ]; then
+  exit 1
+fi
