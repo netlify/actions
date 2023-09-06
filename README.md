@@ -1,5 +1,7 @@
 # GitHub Actions for Netlify
 
+## Please note that this codebase is not maintained or supported by Netlify and does not receive updates
+
 This repository contains GitHub Actions for Netlify, for performing common tasks such as triggering a site deploy, as well as a generic cli for doing arbitrary actions with the netlify commandline client.
 
 ## Usage
