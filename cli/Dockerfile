@@ -9,6 +9,9 @@ LABEL "com.github.actions.description"="Wraps the Netlify CLI to enable common N
 LABEL "com.github.actions.icon"="cloud"
 LABEL "com.github.actions.color"="blue"
 
+# Install bash and other required dependencies
+RUN apk add --no-cache bash
+
 RUN npm install -g netlify-cli
 
 COPY entrypoint.sh /entrypoint.sh
