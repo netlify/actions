@@ -10,6 +10,9 @@ EOF
 
 OUTPUT=$(sh -c "$COMMAND")
 
+echo "🪵 RAW CLI OUTPUT:"
+echo "$OUTPUT" | od -c  # This shows non-printable chars as octal escapes
+
 NETLIFY_OUTPUT=$(echo "$OUTPUT")
 NETLIFY_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*(--)[a-zA-Z0-9./?=_-]*')
 NETLIFY_LOGS_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://app.netlify.com/[a-zA-Z0-9./?=_-]*')
