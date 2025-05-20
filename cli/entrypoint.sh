@@ -1,9 +1,8 @@
 #!/bin/sh -l
 
-# Disable formatting from Netlify CLI
 export TERM=dumb
 
-# Build the command block
+# Build command to run netlify
 read -d '' COMMAND <<- EOF
   if [ -f "\$HOME/ignore" ] && grep "^ignore:\$BUILD_DIR" "\$HOME/ignore"; then
     echo "\$BUILD_DIR didn't change"
@@ -12,25 +11,35 @@ read -d '' COMMAND <<- EOF
   fi
 EOF
 
-# Execute command and capture raw output (stdout + stderr)
+# Run command and capture status
 RAW_OUTPUT=$(sh -c "$COMMAND" 2>&1)
+EXIT_CODE=$?
 
-# Strip ANSI escape sequences (e.g. \033[31m) and remove non-printables
-SANITIZED_OUTPUT=$(echo "$RAW_OUTPUT" | perl -pe 's/\e\[?.*?[\@-~]//g' | tr -cd '[:print:]\n\r')
-
-# Optional debug
+# Debug dump (optional)
 echo "🪵 RAW OUTPUT:"
 echo "$RAW_OUTPUT" | od -c | head -40
+
+# Fail if command did not succeed
+if [ $EXIT_CODE -ne 0 ]; then
+  echo "❌ Netlify CLI command failed (exit code $EXIT_CODE)"
+  echo "$RAW_OUTPUT"
+  exit $EXIT_CODE
+fi
+
+# Strip ANSI escape sequences and non-printables
+SANITIZED_OUTPUT=$(echo "$RAW_OUTPUT" | perl -pe 's/\e\[?.*?[\@-~]//g' | tr -cd '[:print:]\n\r')
+
+# Debug sanitized output
 echo "🪵 CLEAN OUTPUT:"
 echo "$SANITIZED_OUTPUT"
 
-# Parse sanitized output for relevant Netlify URLs
+# Extract values
 NETLIFY_OUTPUT="$SANITIZED_OUTPUT"
 NETLIFY_URL=$(echo "$SANITIZED_OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*(--)[a-zA-Z0-9./?=_-]*')
 NETLIFY_LOGS_URL=$(echo "$SANITIZED_OUTPUT" | grep -Eo '(http|https)://app.netlify.com/[a-zA-Z0-9./?=_-]*')
 NETLIFY_LIVE_URL=$(echo "$SANITIZED_OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*' | grep -Eov "netlify.com")
 
-# Write sanitized values to GitHub output file
+# Safely write outputs
 safe_output() {
   local name="$1"
   local value="$2"
