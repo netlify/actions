@@ -15,9 +15,16 @@ NETLIFY_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*(--)[a
 NETLIFY_LOGS_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://app.netlify.com/[a-zA-Z0-9./?=_-]*') #Unique key: app.netlify.com
 NETLIFY_LIVE_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*' | grep -Eov "netlify.com") #Unique key: don't containr -- and app.netlify.com
 
-[ -n "$NETLIFY_OUTPUT" ] && echo "NETLIFY_OUTPUT=$NETLIFY_OUTPUT" >> "$GITHUB_OUTPUT"
-[ -n "$NETLIFY_URL" ] && echo "NETLIFY_URL=$NETLIFY_URL" >> "$GITHUB_OUTPUT"
-[ -n "$NETLIFY_LOGS_URL" ] && echo "NETLIFY_LOGS_URL=$NETLIFY_LOGS_URL" >> "$GITHUB_OUTPUT"
-[ -n "$NETLIFY_LIVE_URL" ] && echo "NETLIFY_LIVE_URL=$NETLIFY_LIVE_URL" >> "$GITHUB_OUTPUT"
+# Function to safely write outputs
+safe_output() {
+  local name="$1"
+  local value="$2"
+  if [ -n "$value" ]; then
+    echo "${name}=${value}" >> "$GITHUB_OUTPUT"
+  fi
+}
 
-
+safe_output "NETLIFY_OUTPUT" "$NETLIFY_OUTPUT"
+safe_output "NETLIFY_URL" "$NETLIFY_URL"
+safe_output "NETLIFY_LOGS_URL" "$NETLIFY_LOGS_URL"
+safe_output "NETLIFY_LIVE_URL" "$NETLIFY_LIVE_URL"
