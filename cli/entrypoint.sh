@@ -1,28 +1,39 @@
 #!/bin/sh -l
 
+# Disable terminal formatting from Netlify CLI
+export TERM=dumb
+
+# Build the command block
 read -d '' COMMAND <<- EOF
   if [ -f "\$HOME/ignore" ] && grep "^ignore:\$BUILD_DIR" "\$HOME/ignore"; then
     echo "\$BUILD_DIR didn't change"
   else
-    ${BUILD_COMMAND:-echo} && netlify $*
+    ${BUILD_COMMAND:-echo} && netlify "$@"
   fi
 EOF
 
-OUTPUT=$(sh -c "$COMMAND")
+# Execute command and capture raw output
+RAW_OUTPUT=$(sh -c "$COMMAND" 2>&1)
 
-echo "🪵 RAW CLI OUTPUT:"
-echo "$OUTPUT" | od -c  # This shows non-printable chars as octal escapes
+# Strip ANSI escape sequences and Unicode line art safely
+SANITIZED_OUTPUT=$(echo "$RAW_OUTPUT" | perl -pe 's/\e\[?.*?[\@-~]//g' | iconv -f utf-8 -t ascii//TRANSLIT)
 
-NETLIFY_OUTPUT=$(echo "$OUTPUT")
-NETLIFY_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*(--)[a-zA-Z0-9./?=_-]*')
-NETLIFY_LOGS_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://app.netlify.com/[a-zA-Z0-9./?=_-]*')
-NETLIFY_LIVE_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*' | grep -Eov "netlify.com")
+# Optional: debug dump
+echo "🪵 RAW OUTPUT:"
+echo "$RAW_OUTPUT" | od -c | head -40
+echo "🪵 CLEAN OUTPUT:"
+echo "$SANITIZED_OUTPUT"
 
-# Safe writer to avoid invalid output errors
+# Parse values
+NETLIFY_OUTPUT="$SANITIZED_OUTPUT"
+NETLIFY_URL=$(echo "$SANITIZED_OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*(--)[a-zA-Z0-9./?=_-]*')
+NETLIFY_LOGS_URL=$(echo "$SANITIZED_OUTPUT" | grep -Eo '(http|https)://app.netlify.com/[a-zA-Z0-9./?=_-]*')
+NETLIFY_LIVE_URL=$(echo "$SANITIZED_OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*' | grep -Eov "netlify.com")
+
+# Safe writer to GitHub output
 safe_output() {
   local name="$1"
   local value="$2"
-  value=$(echo "$value" | tr -cd '[:print:]\n\r')
   if [ -n "$value" ]; then
     echo "${name}=${value}" >> "$GITHUB_OUTPUT"
   fi
