@@ -1,8 +1,5 @@
 FROM node:22-alpine
 
-# Add required tools: perl for stripping ANSI escape sequences
-RUN apk add --no-cache perl
-
 # Install Netlify CLI
 RUN npm install -g netlify-cli
 
@@ -16,5 +13,9 @@ LABEL "com.github.actions.description"="Wraps the Netlify CLI to enable common N
 LABEL "com.github.actions.icon"="cloud"
 LABEL "com.github.actions.color"="blue"
 
+# Copy entrypoint
 COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+RUN chmod +x /entrypoint.sh
+
+# Use shell entrypoint that preserves "$@"
+ENTRYPOINT ["sh", "-c", "/entrypoint.sh \"$@\""]
