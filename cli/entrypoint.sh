@@ -12,9 +12,9 @@ echo "running ${COMMAND}"
 OUTPUT=$(sh -c "$COMMAND")
 echo "$OUTPUT"
 
-NETLIFY_URL=$(echo "$OUTPUT" | grep -Eo '(https?://[^ ]*--[^ ]*\.netlify\.app)')
-NETLIFY_LOGS_URL=$(echo "$OUTPUT" | grep -Eo 'https://app\.netlify\.com/[^ ]*')
-NETLIFY_LIVE_URL=$(echo "$OUTPUT" | grep -Eo 'https://[^ ]*\.stackql\.io')
+NETLIFY_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*(--)[a-zA-Z0-9./?=_-]*') #Unique key: --
+NETLIFY_LOGS_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://app.netlify.com/[a-zA-Z0-9./?=_-]*') #Unique key: app.netlify.com
+NETLIFY_LIVE_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*' | grep -Eov "netlify.com") #Unique key: don't containr -- and app.netlify.com
 
 {
   echo "NETLIFY_URL=$NETLIFY_URL"
