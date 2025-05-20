@@ -11,10 +11,12 @@ This Action enables arbitrary actions with the [Netlify CLI](https://github.com/
 ## Outputs
 
 The following outputs will be available from a step that uses this action:
-- `NETLIFY_OUTPUT`, the full stdout from the run of the `netlify` command
 - `NETLIFY_URL`, the URL of the draft site that Netlify provides
 - `NETLIFY_LOGS_URL`, the URL where the logs from the deploy can be found
 - `NETLIFY_LIVE_URL`, the URL of the "real" site, set only if `--prod` was passed
+
+> The full stdout from the run of the `netlify` command is printed in the GitHub Actions workflow logs.
+
 
 See [the documentation](https://docs.github.com/en/free-pro-team@latest/actions/reference/context-and-expression-syntax-for-github-actions) for info and examples of how to use outputs in later steps and jobs.
 
@@ -33,7 +35,7 @@ jobs:
     - name: Publish
       uses: netlify/actions/cli@master
       with:
-        args: deploy --dir=site --functions=functions
+        args: deploy --prod --dir=./build --message="Deploy from Github Action"
       env:
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
