@@ -12,4 +12,5 @@ LABEL "com.github.actions.color"="blue"
 RUN npm install -g netlify-cli
 
 COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["sh", "/entrypoint.sh"]
